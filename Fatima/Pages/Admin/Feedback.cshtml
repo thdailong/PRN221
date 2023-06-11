@@ -1,0 +1,64 @@
+﻿@page
+@model Fatima.Pages.Admin.FeedbackModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Feedback";
+}
+
+
+<div class="table-overview">
+    <div class="table-overview-header">
+        <div class="table-title">
+            Feedback management
+        </div>
+        <div class="header-icon-bar">
+            <div class="table-icon">
+                <i class="fal fa-sort-amount-up"></i>
+                <span>Sort</span>
+            </div>
+            <div class="table-icon">
+                <i class="fal fa-filter"></i>
+                <span>Filter</span>
+            </div>
+        </div>
+    </div>
+    <div class="overview-table-body">
+        <table class="overview-table">
+            <thead>
+                <tr>
+                    <td style="width: 480px">Username</td>
+                    <td>Title</td>
+                    <td>Detail</td>
+                    <td>Priority</td>
+                    <td style="width: 0px"></td>
+                </tr>
+            </thead>
+            <tbody id="tbl-body">
+            </tbody>
+        </table>
+    </div>
+    <div class="table-overview-footer">
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    async function loadFeedbacks() {
+        const resp = await fetch("/_component/admin/feedbackData", {
+            method: "post"
+        });
+        $("#tbl-body").html(await resp.text());
+    }
+
+        loadFeedbacks();
+
+        const conn = connectWS(conn => {
+            conn.invoke("Join", "listenNewFb");
+        });
+
+        conn.on("NewFeedback", email => {
+            toast_success("Received new feedback", `Got a new feedback from "${email}"`);
+            loadFeedbacks();
+        });
+</script>
+}

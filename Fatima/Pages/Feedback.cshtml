@@ -1,0 +1,213 @@
+﻿@page
+@model Fatima.Pages.FeedbackModel
+@{
+	Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://kit-pro.fontawesome.com/releases/v5.15.4/css/pro.min.css" rel="stylesheet" />
+
+	<title>Feedback</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="/feedback/images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/feedback/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/feedback/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/feedback/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/feedback/vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/feedback/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/feedback/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/feedback/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/feedback/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="~/asset/css/iziToast.min.css" rel="stylesheet" />
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/feedback/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/feedback/css/main.css">
+<!--===============================================================================================-->
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+</head>
+<body>
+	<div class="container-contact100">
+		<div class="wrap-contact100">
+			<form class="contact100-form validate-form" method="post">
+				<span class="contact100-form-title animate__animated animate__fadeIn">
+					<a class="btn btn-primary" href="/" id="back-btn">
+						<i class="fal fa-chevron-left"></i>
+					</a>
+					Send Us A Message
+				</span>
+					
+				@if (TempData["feedbackSent"] is not null)
+				{
+					<div class="animate__animated animate__fadeInLeftBig" style="margin-bottom: 16px; color: #25A56A99; display: flex; gap: 8px;">
+						<div>
+							Thank you, your feedback has been sent!
+						</div>
+						<div class="animate__animated animate__fadeIn animate__delay-1s">
+							<i class="fal fa-check"></i> 
+						</div>
+					</div>
+				}
+
+				<div class="wrap-input100 validate-input disable-item" data-validate="Name is required">
+					<label class="label-input100" for="name">Full name</label>
+					<input value="@Model.Account.DisplayName" disabled class="input100" type="text">
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input disable-item" data-validate = "Valid email is required: ex@abc.xyz">
+					<label class="label-input100" for="email">Email Address</label>
+					<input value="@Model.Account.Email" disabled class="input100" type="text">
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate = "Title is required">
+					<label class="label-input100" asp-for="Title">Title</label>
+					<input asp-for="Title" class="input100" type="text" placeholder="Enter issue title...">
+					<span class="focus-input100"></span>
+					<span class="text-danger" style="display: inline-block; padding: 20px;" asp-validation-for="Title"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate = "Detail infomation is required">
+					<label class="label-input100" asp-for="Detail">Detail</label>
+					<textarea asp-for="Detail" class="input100" placeholder="Type your message here..."></textarea>
+					<span class="focus-input100"></span>
+					<span class="text-danger" style="display: inline-block; padding: 20px;" asp-validation-for="Detail"></span>
+				</div>
+
+				<div class="container-contact100-form-btn  animate__animated animate__fadeInUp">
+					<button class="contact100-form-btn">
+						Send
+					</button>
+				</div>
+
+				<div class="contact100-form-social flex-c-m" >
+					<a href="#" class="contact100-form-social-item flex-c-m bg1 m-r-5">
+						<i class="fa fa-facebook-f" aria-hidden="true"></i>
+					</a>
+
+					<a href="#" class="contact100-form-social-item flex-c-m bg2 m-r-5">
+						<i class="fa fa-twitter" aria-hidden="true"></i>
+					</a>
+
+					<a href="#" class="contact100-form-social-item flex-c-m bg3">
+						<i class="fa fa-youtube-play" aria-hidden="true"></i>
+					</a>
+				</div>
+			</form>
+
+			<div class="contact100-more flex-col-c-m" style="background-image: url('/feedback/images/bg-01.jpg');">
+			</div>
+		</div>
+	</div>
+
+<!--===============================================================================================-->
+	<script src="/feedback/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/feedback/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/feedback/vendor/bootstrap/js/popper.js"></script>
+	<script src="/feedback/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/feedback/vendor/select2/select2.min.js"></script>
+	<script>
+		$(".js-select2").each(function(){
+			$(this).select2({
+				minimumResultsForSearch: 20,
+				dropdownParent: $(this).next('.dropDownSelect2')
+			});
+		})
+		$(".js-select2").each(function(){
+			$(this).on('select2:open', function (e){
+				$(this).parent().next().addClass('eff-focus-selection');
+			});
+		});
+		$(".js-select2").each(function(){
+			$(this).on('select2:close', function (e){
+				$(this).parent().next().removeClass('eff-focus-selection');
+			});
+		});
+
+	</script>
+<!--===============================================================================================-->
+	<script src="/feedback/vendor/daterangepicker/moment.min.js"></script>
+	<script src="/feedback/vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="/feedback/vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+	<script src="~/asset/js/signalr.min.js"></script>
+	<script src="~/asset/js/iziToast.min.js"></script>
+<!--===============================================================================================-->
+
+	<script src="/feedback/js/main.js"></script>
+
+	<script>
+		function connectWS(startCb = () => { }) {
+			var conn = new signalR.HubConnectionBuilder().withUrl("/_ws").build();
+			conn.start().then(() => startCb(conn));
+			return conn;
+		}
+
+		(() => {
+			const toastCfg = {
+				position: "topRight",
+				closeOnClick: true,
+				closeOnClick: true,
+				pauseOnHover: false,
+				layout: 2,
+				timeout: 3000
+			}
+
+			window.toast_success = (title, message) => {
+				iziToast.show({
+					...toastCfg,
+					title: title,
+					message: message,
+					color: "green",
+					icon: "fal fa-check",
+					iconColor: "#32CD32"
+				});
+			}
+
+			window.toast_error = (title, message) => {
+				iziToast.show({
+					...toastCfg,
+					title: title,
+					message: message,
+					color: "red",
+					icon: "fal fa-exclamation",
+					iconColor: "#D2001A"
+				});
+			}
+		})();
+	</script>
+
+	<script>
+		@if (TempData["feedbackSent"] != null)
+		{
+			<text>
+				toast_success("Feedback was sent", "Thank you for your help");
+
+				connectWS(conn => {
+					conn.invoke("SentFeedback", "@Model.Account.Email");
+				});
+			</text>
+		}
+	</script>
+</body>
+</html>

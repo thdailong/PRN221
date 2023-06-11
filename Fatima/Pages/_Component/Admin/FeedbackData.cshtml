@@ -1,0 +1,62 @@
+﻿@page
+@model FeedbackDataModel
+@using Fatima.Utils
+@{
+}
+
+@foreach (var f in Model.Feedbacks) {
+    <tr>
+        <td class="card-container">
+            <div class="card-image-container" >
+                <img class="card-image card-avatar"
+                        src="@f.Account.AvatarUrl" />
+            </div>
+            <div class="card-info" >
+                <div class="card-name">
+                    @f.Account.DisplayName
+                </div>
+                <div class="card-desc">
+                    @f.Account.Email
+                </div>
+            </div> 
+        </td>
+        <td>
+            <div class="card-info">
+                <div class="card-name">
+                    @f.Title
+                </div>
+                <div class="card-desc">
+                    on @f.CreatedAt
+                </div>
+            </div> 
+        </td>
+        <td>
+            <div class="card-info">
+                <div class="card-name">
+                    @f.Detail
+                </div>
+            </div> 
+        </td>
+        <td>
+            <div class="status-normal status-pill"></div>
+        </td>
+        <td>
+            <div class="list">
+                <a class="toggler" href="javascript:void(0);">
+                    <i class="fal fa-ellipsis-v"></i>
+                </a>
+                <ul class="list-data" style="padding: 0;">
+                        <a href="javascript:void(0);">
+                        <li class="list-item">Normal</li>
+                    </a>
+                    <a href="javascript:void(0);">
+                        <li class="list-item">Medium</li>
+                    </a>
+                    <a href="javascript:void(0);">
+                        <li class="list-item">High</li>
+                    </a>
+                </ul>
+            </div>
+        </td>
+    </tr>
+}

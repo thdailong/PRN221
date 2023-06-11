@@ -1,0 +1,409 @@
+﻿@page
+@model Fatima.Pages.StatisticsModel
+@using Fatima.Utils
+@{
+    Layout = "_HomeLayout";
+    ViewData["Title"] = "Statistics";
+}
+
+
+
+
+@section Css {
+    <style>
+        .income-number {
+            color: #45A18D;
+        }
+        .spending-number {
+            color: #E47072;
+        }
+        .record-item {
+            padding: 1rem 1rem; 
+            border-top: 1px solid #00000025; 
+            margin: 0px;
+        }
+        .record-item:hover {
+            background-color: #00000015;
+        }
+        .cate-icon {
+            font-size: 1rem;
+        }
+        .cate-icon > i {
+            width: 1rem;
+            height: 1rem;
+        }
+    </style>
+}
+
+<form method="GET">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="d-flex justify-content-between" style="margin: 20px 20px 10px 20px;"> 
+                <div>
+                    <h1>Statistics</h1>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <a class="btn btn-primary gap-3 text-nowrap">
+                        <span>From</span>
+                        <input required asp-for="FromDate" class="border-0 text-white" style="background: transparent; color: white;" type="date"/>
+                    </a>
+                    <a class="btn btn-primary gap-3 text-nowrap">
+                        <span>To</span>
+                        <input required asp-for="ToDate" class="border-0 text-white" style="background: transparent; color: white;" type="date"/>
+
+                    </a>
+                    <select class="form-select"  asp-for="Freq" required>
+                      <option selected value="ymd">Daily</option>
+                      <option value="yw">Week</option>
+                      <option value="dow">Day of Week</option>
+                      <option value="ym">Month</option>
+                      <option value="y">Year</option>
+                    </select>
+                    <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="fal fa-filter"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col">
+            <div class=" shadow p-4  rounded-4 text-center" style="margin: 10px 10px 10px 20px; background-color: white">
+                <h4 style="font-weight: 600">
+                    <i class="fal fa-balance-scale"></i>
+                    <span class="income-number">@Model.IncomeSum</span><span>/</span>
+                    <span class="spending-number">@Model.SpendingSum</span>
+                </h4>
+                <span class="text-muted">Total balance</span>
+            </div>
+        </div>
+        <div class="col">
+            <div class=" shadow p-4  rounded-4 text-center" style="margin: 10px 10px 10px 10px; background-color: white">
+                <h4 style="font-weight: 600"><i class="fal fa-coins" ></i>
+                    <span class="income-number">@Model.IncomeAvg</span><span>/</span>
+                    <span class="spending-number">@Model.SpendingAvg</span></h4>
+                <span class="text-muted">Average</span>
+            </div>
+        </div>
+        <div class="col">
+            <div class=" shadow p-4  rounded-4 text-center" style="margin: 10px 20px 10px 10px; background-color: white">
+                <h4 style="font-weight: 600"><i class="fal fa-money-bill-wave-alt"></i>
+                    <span class="income-number">@Model.IncomeMax</span><span>/</span>
+                    <span class="spending-number">@Model.SpendingMax</span></h4>
+                </h4>
+                <span class="text-muted">Maximum</span>
+            </div>
+        </div>
+        <div class="col">
+            <div class=" shadow p-4  rounded-4 text-center" style="margin: 10px 20px 10px 10px; background-color: white">
+                <h4 style="font-weight: 600"><i class="fal fa-money-bill-wave-alt"></i>
+                    <span class="income-number">@Model.IncomeMin</span><span>/</span>
+                    <span class="spending-number">@Model.SpendingMin</span></h4>
+                </h4>
+                <span class="text-muted">Minimum</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row p-4">
+        <div class="col-8">
+            <div class="shadow h-100 p-4 rounded-4"style="background-color: white">
+                <div class="d-flex justify-content-between" >
+                    <h4 style="font-weight: 600">Income</h4>
+                </div>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="shadow h-100  p-4 rounded-4" style="background-color: white">
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                    <h4 style="font-weight: 600">Income</h4>
+                    <div>
+                        <select class="form-select" onchange="updatePie(value);">
+                          <option selected value="spending">Expense</option>
+                          <option value="income">Income</option>
+                        </select>
+                    </div>
+                </div>
+                <canvas id="pieChart"></canvas>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="row">
+       <div class="col-6">
+            <div class="shadow border rounded-4" style="background-color: white; margin: 10px 10px 20px 20px; padding-bottom: 1rem;">
+                <div class="d-flex justify-content-between" style="padding: 0 1rem; margin-top: 2rem;">
+                    <h3 style="font-weight: 600;">Top 5 Category</h3>
+                </div>
+                <div class="d-flex justify-content-between" style="padding: 0 1rem; margin-top: 2rem;">
+                    <div class="text-muted">Spending</div>
+                </div>
+                @foreach(var c in Model.SpendCateData)
+                {
+                    <hr />
+                    <div class="d-flex align-items-start" style="padding: 0 1rem;">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-6 d-flex gap-3 align-items-center">
+                                    <span class="btn @c.IconColorClass btn-sm" >
+                                        <i class="@c.ClassName"></i>
+                                    </span>
+                                    <span style="font-weight: 500;">@c.Name</span>
+                                </div>
+                                <span class="col-3 text-muted">@c.Cnt transaction</span>
+                                <h5 class="col-3 d-flex justify-content-end spending-number">@Helper.FormatNumber(c.Amount)</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col" style="margin-left: 3rem;">
+                                    <div class="progress" style="height: 8px;">
+                                      <div class="progress-bar" style="width: @c.Ratio%; background-color: #034079; border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="text-muted" style="padding-left: .75rem; margin-top: 2rem;">Income</div>
+                @foreach(var c in Model.IncomeCateData)
+                {
+                    <hr />
+                    <div class="d-flex align-items-start" style="padding: 0 1rem;">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-6 d-flex gap-3 align-items-center">
+                                    <span class="btn @c.IconColorClass btn-sm" >
+                                        <i class="@c.ClassName"></i>
+                                    </span>
+                                    <span style="font-weight: 500;">@c.Name</span>
+                                </div>
+                                <span class="col-3 text-muted">@c.Cnt transaction</span>
+                                <h5 class="col-3 d-flex justify-content-end income-number">@Helper.FormatNumber(c.Amount)</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col" style="margin-left: 3rem;">
+                                    <div class="progress" style="height: 8px;">
+                                      <div class="progress-bar" style="width: @c.Ratio%; background-color: #034079; border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="border shadow rounded-4" style="background-color: white; margin: 10px 20px 20px 10px; padding-bottom: 1rem;">
+                <div class="d-flex justify-content-between" style="padding: 0 1rem; margin-top: 2rem;">
+                    <h3 style="font-weight: 600;">History</h3>
+                </div>
+                <div class="d-flex justify-content-between" style="padding: 0 1rem; margin-top: 2rem;">
+                    <div class="text-muted">Spending</div>
+                </div>
+                @foreach(var c in Model.SpendTranData)
+                {
+                <div class="row record-item">
+                    <div class="col-5 d-flex gap-3 align-items-center">
+                        <span class="btn @c.IconColorClass btn-sm" >
+                            <i class="@c.ClassName"></i>
+                        </span>
+                        <span style="font-weight: 500;">@c.Name</span>
+                    </div>
+                    <span class="col-5 text-muted">@c.Date</span>
+                    <h5 class="col-2  d-flex gap-1 justify-content-end align-items-center income-number">@Helper.FormatNumber(c.Amount)<i class="fal fa-money-bill"></i></h5>
+                </div>
+                }
+                <div class="d-flex justify-content-between" style="padding: 0 1rem; margin-top: 2rem;">
+                    <div class="text-muted">Income</div>
+                </div>
+                @foreach(var c in Model.IncomeTranData)
+                {
+                <div class="row record-item">
+                    <div class="col-5 d-flex gap-3 align-items-center">
+                        <span class="btn @c.IconColorClass btn-sm" >
+                            <i class="@c.ClassName"></i>
+                        </span>
+                        <span style="font-weight: 500;">@c.Name</span>
+                    </div>
+                    <span class="col-5 text-muted">@c.Date</span>
+                    <h5 class="col-2  d-flex gap-1 justify-content-end align-items-center spending-number">@Helper.FormatNumber(c.Amount)<i class="fal fa-money-bill"></i></h5>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal for filter -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Filter categories</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div class="text-muted mb-2">Spending</div>
+          <div class="border bg-light rounded p-3">
+            @for (int i = 0; i < Model.ListSpendCate.Count; i += 1)
+            {
+                var c = Model.ListSpendCate[i];
+                <div class="d-flex justify-content-between mb-2">
+                    <label class="form-check-label" for="cate@(c.Id)">
+                        <div class="d-flex gap-3 align-items-center">
+                            <span class="btn @c.IconColorClass btn-sm cate-icon" >
+                                <i class="@c.Icon.ClassName"></i>
+                            </span>
+                            <span style="font-weight: 500;">@c.Name</span>
+                        </div>
+                    </label>
+                        
+                    <input class="form-check-input" name="ListId" type="checkbox" value="@(c.Id)" id="cate@(c.Id)">
+                </div>                            
+            }
+          </div>
+          <div class="text-muted mb-2">Income</div>
+          <div class="border bg-light rounded p-3">
+              @for (int i = 0; i < Model.ListIncomeCate.Count; i += 1)
+            {
+                var c = Model.ListIncomeCate[i];
+                <div class="d-flex justify-content-between mb-2">
+                    <label class="form-check-label" for="cate@(c.Id)">
+                        <div class="d-flex gap-3 align-items-center">
+                            <span class="btn @c.IconColorClass btn-sm cate-icon" >
+                                <i class="@c.Icon.ClassName"></i>
+                            </span>
+                            <span style="font-weight: 500;">@c.Name</span>
+                        </div>
+                    </label>
+                        
+                    <input class="form-check-input" name="ListId" type="checkbox" value="@(c.Id)" id="cate@(c.Id)">
+                </div>                            
+            }
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Apply changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</form>
+
+@section Scripts {
+<script>
+    const CHART_COLORS = {
+      red: 'rgb(255, 99, 132)',
+      orange: 'rgb(255, 159, 64)',
+      yellow: 'rgb(255, 205, 86)',
+      green: 'rgb(75, 192, 192)',
+      blue: 'rgb(54, 162, 235)',
+      purple: 'rgb(153, 102, 255)',
+      grey: 'rgb(201, 203, 207)'
+    };
+
+    const mycolors = ['#1abc9c','#2ecc71','#3498db','#9b59b6','#34495e',
+    '#f1c40f','#e67e22','#e74c3c','#ecf0f1','#95a5a6',
+    '#16a085','#27ae60','#2980b9','#8e44ad','#2c3e50',
+    '#f39c12','#d35400','#c0392b','#bdc3c7','#7f8c8d'].map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+
+    const Bar = @Html.Raw(Model.Stats.Bar)
+    const Pie = @Html.Raw(Model.Stats.Pie)
+    function updateBar() {
+        const data2 = {
+          labels: Bar.map(e => e.label),
+          datasets: [
+            {
+              label: 'Income',
+              data: Bar.map(e => e.income),
+              backgroundColor: CHART_COLORS.blue,
+            },
+            {
+              label: 'Spending',
+              data: Bar.map(e => e.spend),
+              backgroundColor: CHART_COLORS.orange,
+            }
+          ]
+        };
+
+        const config2 = {
+          type: 'bar',
+          data: data2,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+            },
+            scales: {
+
+            y: {
+                ticks: {
+                  // For a category axis, the val is the index so the lookup via getLabelForValue is needed
+                  callback: function(value, index, ticks) {
+                    // Hide every 2nd tick label
+                    return Intl.NumberFormat('en-US', {
+                      notation: "compact",
+                      maximumFractionDigits: 1
+                    }).format(value);;
+                  },
+                    }
+                  }
+              },
+            }
+        };
+        new Chart(
+            document.getElementById('barChart'),
+            config2
+        );
+   }
+   updateBar()
+
+   let pieChart
+
+   function updatePie(type) {
+       if (pieChart != undefined)    pieChart.destroy()
+       const data = {
+          labels: Pie.filter(e => e.type == type).map(e => e.label),
+          datasets: [
+            {
+              label: type,
+              data: Pie.filter(e => e.type == type).map(e => e.spend),
+              backgroundColor: mycolors,
+            }
+          ]
+        };
+
+        const config = {
+          type: 'pie',
+          data: data,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+            }
+          },
+        };
+        pieChart = new Chart(
+            document.getElementById('pieChart'),
+            config
+        );
+   }
+   updatePie('spending')
+</script>
+}

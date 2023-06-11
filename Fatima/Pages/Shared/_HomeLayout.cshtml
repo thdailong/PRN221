@@ -1,0 +1,86 @@
+﻿@using Fatima.Utils
+@{
+    Layout = "_Layout";
+}
+
+@section Css {
+    <style>
+        body {
+            min-height: 100vh;
+            background-color: #F4F7FD;
+        }
+
+        .sidebar-item.active {
+            background-color: #E6EEF2;
+            border-radius: 10px;
+        }
+        .sidebar-item.active > a {
+            color: #034079 !important;
+            font-weight:bold;
+        }
+    </style>
+
+    @await RenderSectionAsync("Css", false)
+}
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    @await RenderSectionAsync("Scripts", false)
+}
+
+<div>
+    <div class="justify-content-start d-flex">
+        <div>
+            <div class="sticky-top d-flex flex-column p-3 text-white" style="width: 280px; height: 100vh; background-color: #034079;">
+                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                  <h2 style="margin-right:20px"><i class="fal fa-money-check-alt"></i></h2>
+                  <h2>Fatima</h2>
+                </a>
+                <hr>
+                <ul class="nav nav-pills flex-column mb-auto" style="gap: 12px">
+                  <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "wallet")">
+                    <a href="/wallet" class="nav-link text-white">
+                      <i class="fal fa-wallet" style="width: 40px; height: 16px;"></i>
+                      <span>Wallet</span>
+                    </a>
+                  </li>
+                  <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "history")">
+                    <a href="/history" class="nav-link text-white">
+                      <i class="fal fa-history" style="width: 40px; height: 16px;"></i>
+                      <span>History</span>
+                    </a>
+                  </li>
+                    <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "statistics")">
+                    <a href="/statistics" class="nav-link text-white">
+                      <i class="fal fa-chart-bar" style="width: 40px; height: 16px;"></i>
+                      <span>Statistics</span>
+                    </a>
+                  </li>
+                    <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "profile")">
+                     <a href="/profile" class="nav-link text-white">
+                      <i class="fal fa-user-circle" style="width: 40px; height: 16px;"></i>
+                      <span>Profile</span>
+                    </a>
+                  </li>
+                  <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "feedback")">
+                    <a href="/feedback" class="nav-link text-white">
+                      <i class="fal fa-comments-alt" style="width: 40px; height: 16px;"></i>
+                      <span>Feedback</span>
+                    </a>
+                  </li>
+                  <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "logout")">
+                    <a href="/logout" class="nav-link text-white">
+                      <i class="fal fa-sign-out-alt" style="width: 40px; height: 16px;"></i>
+                      <span>Logout</span>
+                    </a>
+                  </li>
+                </ul>
+                <hr>
+            </div>
+        </div>
+        <div class="col p-0">
+            @RenderBody()
+        </div>
+
+    </div>
+</div>

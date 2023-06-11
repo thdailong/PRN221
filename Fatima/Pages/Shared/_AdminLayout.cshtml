@@ -1,0 +1,51 @@
+﻿@using Fatima.Utils
+]@{
+    Layout = "_Layout";
+    //Log.Debug("@{RouteData}", Context.Request.RouteValues);
+}
+
+@section Css {
+    <link rel="stylesheet" href="~/asset/css/layout/admin.css" >
+    @await RenderSectionAsync("Css", false)
+}
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    @await RenderSectionAsync("Scripts", false)
+}
+
+<div class="admin-sidenav">
+    <a class="sidenav-logo" href="/admin">
+        <div class="d-logo">
+            <span class="logo-center">
+                <i class="fal fa-user-shield"></i>
+            </span>
+        </div>
+        <div class="word-logo">
+            Dashboard
+        </div>
+    </a>
+    <a class="sidenav-item @Helper.ActiveClass(Context, "index")" href="/admin">
+        <i class="fal fa-chart-pie"></i>
+        <span>Overview</span>
+    </a>
+    <a class="sidenav-item @Helper.ActiveClass(Context, "user")" href="/admin/user">
+        <i class="fal fa-joystick"></i>
+        <span>User management</span>
+    </a>
+    <a class="sidenav-item @Helper.ActiveClass(Context, "feedback")"  href="/admin/feedback">
+        <i class="fal fa-comment-alt-lines"></i>
+        <span>Feedback</span>
+    </a>
+</div>
+<div class="admin-main-contain">
+    <div class="admin-header">
+        <div class="header-title">
+            <h1>Overview</h1>
+        </div>
+    </div>
+        
+    <div class="admin-body">
+        @RenderBody()
+    </div>
+</div>
