@@ -1,0 +1,74 @@
+﻿@page
+@{
+
+}
+@section Css {
+    <style>
+        .page-access {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        .text-accessDenied {
+            text-align: center;
+            margin-top: 2rem;
+            font-family: "Poppins";
+            height: auto%;
+        }
+
+        .text-tittle {
+            font-size: 7rem;
+            font-weight: 600;
+        }
+
+        .text-access {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .text-desc {
+            color: #999;
+            margin-top: 1rem;
+            z-index: 0;
+        }
+
+        .img-access {
+            text-align: center;
+            max-width: 100%;
+            display: block;
+        }
+
+        .image {
+            position: relative;
+            bottom: 8rem;
+            padding-bottom: 5rem;
+            object-fit: cover;
+            object-position: bottom;
+            margin: 0 auto;
+            display: inline-block;
+            z-index: -1;
+        }
+
+    </style>
+}
+    <div class="page-access">
+
+        <div class="text-accessDenied">
+            <h3 class="text-tittle">403</h3>
+            <span class="text-access">Access Denied</span>
+
+            <p class="text-desc"> Sorry, but you don’t have permission to access this page.</p>
+            <p class="text-desc"> You can go back to <a href="http://localhost:5088/wallet"> Home Page </a>.</p>
+
+
+
+            <div class="img-access">
+
+                <img src="~/asset/img/accessDenied1.png" alt="accessDenied" class="image" />
+
+            </div>
+
+        </div>
+

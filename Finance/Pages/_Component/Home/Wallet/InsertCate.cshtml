@@ -1,0 +1,19 @@
+﻿@page
+@model InsertCateModel
+@{
+}
+
+@foreach(var c in Model.ListCate)
+{
+    <div class="d-flex justify-content-between mb-2">
+        <div class="d-flex gap-3 align-items-center" data-bs-toggle="modal" data-bs-target="#cateModal" onclick="loadCate(@(c.Id), '@Html.Raw(c.Name)', '@Html.Raw(c.IconColorClass)', '@Html.Raw(c.Icon.ClassName)', @Html.Raw(c.Icon.Id))">
+            <span class="btn @c.IconColorClass btn-sm cate-icon" >
+                <i class="@c.Icon.ClassName"></i>
+            </span>
+            <span style="font-weight: 500;">@c.Name</span>
+        </div>
+        <span class="btn btn-outline-danger btn-sm cate-icon" onclick="deleteCate(@c.Id)">
+            <i class="fal fa-trash"></i>
+        </span>
+    </div>
+}

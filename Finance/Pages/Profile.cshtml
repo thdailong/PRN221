@@ -1,0 +1,202 @@
+﻿@page
+@using Finance.Utils
+@model ProfileModel
+@{
+    Layout = "_HomeLayout";
+    
+    ViewData["Title"] = "Profile";
+}
+
+@section Css {
+    <style>
+        ul.timeline {
+            list-style-type: none;
+            position: relative;
+        }
+
+            ul.timeline:before {
+                content: ' ';
+                background: #d4d9df;
+                display: inline-block;
+                position: absolute;
+                left: 29px;
+                width: 2px;
+                height: 100%;
+                z-index: 400;
+            }
+
+            ul.timeline > li {
+                margin: 30px;
+                padding-left: 20px;
+            }
+
+            ul.timeline > li:before {
+                content: ' ';
+                background: white;
+                display: inline-block;
+                position: absolute;
+                border-radius: 50%;
+                border: 3px solid #22c0e8;
+                left: 20px;
+                width: 20px;
+                height: 20px;
+                z-index: 400;
+            }
+
+            .avatar {
+                width: 100px;
+                height: 100px;
+                object-fit: contain;
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+            }
+
+            .avatar:hover {
+                cursor: pointer;
+            }
+
+            .change-password {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .change-password-header > i {
+                transition: .3s;
+            }
+
+            .change-password-header:hover > i {
+                translate: 10px 0;
+            }
+    </style>
+}
+
+ @{
+    var avatarUrl = Helper.GetImage(Model.Account.AvatarUrl, new Imagekit.Transformation().Width(100).Height(100));
+}
+
+<div class="container p-5">
+    <div class="row p-3">
+        <div class="col-lg-6 p-4">
+            <form class="d-flex flex-column" style="gap: 15px;" method="post" enctype="multipart/form-data" asp-page-handler="UpdateInfo" >
+                <span class="fs-3 fw-bold">User information</span>
+                <div class="d-flex justify-content-center">
+                    <img class="rounded-circle avatar" src="@avatarUrl" alt="Avatar" onclick="changeAvatar(this)">
+                    <input asp-for="FormInfo.AvatarUpload" hidden accept="image/*" />
+                </div>
+
+                <div>
+                    <label>Email</label>
+                    <input value="@Model.Account.Email" class="form-control" disabled>
+                </div>
+
+                <div>
+                    <label>Display name</label>
+                    <input asp-for="FormInfo.DisplayName" class="form-control" required>
+                    <span asp-validation-for="FormInfo.DisplayName" class="form-text text-danger"></span>
+                </div>
+
+                <div class="row" style="gap: 10px;">
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary w-100">Update your info</button>
+                    </div>
+                    <div class="col">
+                        <button type="reset" class="btn btn-info text-white w-100">Reset</button>
+                    </div>
+                </div>
+            </form>
+
+            
+            <div class="mt-5">
+                <form class="d-flex flex-column" style="gap: 15px;" method="post" asp-page-handler="UpdatePassword">
+                    <div>
+                        <a class="fs-4 fw-bold change-password-header" id="openPassForm" data-bs-toggle="collapse" href="#changePassword" style="gap: 15px; text-decoration: none;">
+                            <span class="d-inline-block me-1">Change Password</span>
+                            <i class="fal fa-chevron-double-down"></i>
+                        </a>
+                    </div>
+
+                    <div class="collapse change-password" id="changePassword">
+                        <div>
+                            <div class="input-group">
+                                <span class="input-group-text">Old Password</span>
+                                <input asp-for="FormPassword.OldPassword" type="password" class="form-control" placeholder="Old Password" required>
+                            </div>
+                            <span asp-validation-for="FormPassword.OldPassword" class="form-text text-danger"></span>
+                        </div>
+
+                        <div>
+                            <div class="input-group">
+                                <span class="input-group-text">New Password</span>
+                                <input asp-for="FormPassword.Password" type="password" class="form-control" placeholder="Password" required>
+                            </div>
+                            <span asp-validation-for="FormPassword.Password" class="form-text text-danger"></span>
+                        </div>
+
+                        <div>
+                            <div class="input-group">
+                                <span class="input-group-text">Confirm Password</span>
+                                <input asp-for="FormPassword.RePassword" type="password" class="form-control" placeholder="Confirm Password" required>
+                            </div>
+                            <span asp-validation-for="FormPassword.RePassword" class="form-text text-danger"></span>
+                        </div>
+
+                        <div class="row" style="gap: 10px;">
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-danger w-100">Confirm change</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-6 p-4">
+            <span class="fs-3 fw-bold">Activities</span>
+
+            <ul class="timeline">
+                <li>
+                    <a style="color: #034079;font-weight: bold;">Account created</a>
+                    <a class="float-right" style="color: #034079;">@Model.Account.CreatedAt</a>
+                    <p>Login</p>
+                </li>
+                <li>
+                    <a style="color: #21a7d0;font-weight: bold;">Last active</a>
+                    <a class="float-right" style="color: #21a7d0;">@Model.Account.LastActive</a>
+                    <p>Login</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function changeAvatar(target) {
+            const uploadAvt = $q("#FormInfo_AvatarUpload");
+
+            uploadAvt.onchange = function () {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    target.src = URL.createObjectURL(file);
+                    target.onload = function () {
+                        URL.revokeObjectURL(target.src) // free memory
+                    }
+                }
+            }
+
+            uploadAvt.click();
+        }
+
+        @if (TempData["profileUpdateSuccess"] != null)
+        {
+            <text>
+                toast_success("Success", "@TempData["profileUpdateSuccess"]");
+            </text>
+        }
+
+        @if (ViewData["openPassForm"] != null) {
+            <text>
+                $q("#openPassForm").click();
+            </text>
+        }
+    </script>
+}

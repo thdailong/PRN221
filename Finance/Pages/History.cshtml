@@ -1,0 +1,239 @@
+﻿@page
+@model Finance.Pages.HistoryModel
+@{
+    Layout = "_HomeLayout";
+    ViewData["Title"] = "History";
+}
+
+
+@section Css {
+    <style>
+        .income-number {
+            color: #45A18D;
+        }
+        .spending-number {
+            color: #E47072;
+        }
+        .record-item {
+            padding: 1rem 1rem; 
+            border-top: 1px solid #00000025; 
+            margin: 0px;
+        }
+        .record-item:hover {
+            background-color: #00000015;
+        }
+        .cate-icon {
+            font-size: 1rem;
+        }
+        .cate-icon > i {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .sticky {
+            position: fixed;
+            top: 0;
+            width: calc(100% - 304px);
+            max-width: calc(84%) ;
+        }
+
+        .sticky + .history {
+            padding-top: 126px;
+        }
+
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-clear-button {
+            display: none;
+        }
+    </style>
+}
+<form method="GET">
+    <div class="container-fluid">
+            <div id="datePicker" class="bg-white">
+        <div class="row">
+            <div class="col">
+                <div class="d-flex justify-content-between" style="margin: 20px 20px 10px 20px;">
+
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" @(Model.IncomeCheck ? "" : "checked")>
+                            <label class="btn @(Model.IncomeCheck ? "btn-outline-danger" :"btn-outline-danger")" for="btnradio1" onclick="location.href = './history'">
+                                <i class="fal fa-sack-dollar"></i>
+                            <span>Spending</span></label>
+
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @(Model.IncomeCheck ? "checked" : "")>
+                            <label class="btn @(Model.IncomeCheck ? "btn-outline-success" :"btn-outline-success")" for="btnradio2" onclick="location.href = './history?IncomeCheck=true'">
+                                <i class="fal fa-hand-holding-usd"></i>
+                            <span>Income</span></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="row">
+            <div class="col">
+                <div class="d-flex gap-4" style="margin: 10px 20px 10px 20px;">                  
+                    <div class="col">
+                        <a class="btn btn-primary gap-3 w-100">
+                            <span>From</span>
+                            <input required class="border-0 text-white" asp-for="DateFrom" style="background: transparent; color: white;" type="date" value="@Model.LocalDate(Model.DateFrom)"
+                                           min="@Model.LocalDate(Model.DateMin)" max="@Model.LocalDate(Model.DateMax)" onchange="onChangeDate()" />
+                        </a>
+                    </div>
+                    
+                    <div class="col">
+                        <a class="btn btn-primary gap-3 w-100">
+                            <span>To</span>
+                            <input required class="border-0 text-white" asp-for="DateTo" style="background: transparent;" type="date" value="@Model.LocalDate(Model.DateTo)"
+                                           min="@Model.LocalDate(Model.DateMin)" max="@Model.LocalDate(Model.DateMax)" onchange="onChangeDate()" />
+                        </a>  
+                    </div>
+                    <a class="btn btn-dark gap-3 w-30" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="fal fa-filter"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+            </div>
+        <div class="row history">
+            <div class="col">
+                <div class="border rounded-4" style="background-color: white; margin: 10px 20px; padding-bottom: 1rem;">
+                    <div class="d-flex justify-content-between" style="padding: 0 1rem; margin-top: 2rem;">
+                        <h3 style="font-weight: 600;">History</h3>
+                        <h4>
+                            <span>Total: </span>
+                                <span>
+                                    @Model.GetStringFormatAmount(Model.TotalAmount)
+                                </span>
+                        </h4>
+                    </div>
+                    <div id="listTransaction">
+                        @foreach (var tran in Model.Transactions)
+                        {
+                            if (tran.Date.Month < Model.Date.Month && tran.Date.Year == Model.Date.Year || 
+                                Model.IsFirstMonthRender ||
+                                tran.Date.Year < Model.Date.Year
+                            ) {
+                                Model.IsFirstMonthRender = false;
+                                Model.Date = tran.Date;
+                                <div class="d-flex justify-content-between" style="padding: 0 1rem; margin-top: 2rem;">
+                                    <div class="text-muted">@tran.Date.ToString("MMMM yy")</div>
+                                    <div class="text-muted">
+                                        <span>In month: </span>
+                                        <span>@Model.TotalInMonth(tran)</span>
+                                    </div>
+                                </div>
+                            }
+                            <div class="row record-item">
+                                <div class="col-3 d-flex gap-3 align-items-center">
+                                    <span class="btn @tran.Category.IconColorClass btn-sm" onclick="updateModal(@tran.Id)">
+                                        <i class="@tran.Category.Icon.ClassName"></i>
+                                    </span>
+                                    <span style="font-weight: 500;">@tran.Category.Name</span>
+                                </div>
+                                <span class="text-nowrap col-6 text-muted" style="overflow: hidden">
+                                    @tran.Description
+                                </span>
+                                <span class="col-1 text-muted">@tran.Date.ToString("dd MMM, hh:mm")</span>
+                                <h5 class="col-2  d-flex gap-1 justify-content-end align-items-center income-number @(Model.IncomeCheck ? "" : "text-danger")">@(Model.IncomeCheck ? "+" : "-") @Model.GetStringFormatAmount(tran.Amount) <i class="fal fa-money-bill"></i></h5>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Modal for filter -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Filter categories</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              @foreach(var cate in Model.Categories){
+                <div class="d-flex justify-content-between mb-2">
+                        <label class="form-check-label" for="cate@(cate.Id)">
+                        <div class="d-flex gap-3 align-items-center">
+                            <span class="btn btn-success btn-sm cate-icon">
+                                <i class="fal fa-wrench"></i>
+                            </span>
+                            <span style="font-weight: 500;">@cate.Name</span>
+                        </div>
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="@cate.Id" name="ListId"  id="cate@(cate.Id)">
+                </div>
+              }
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <input name="IncomeCheck" value="@(Model.IncomeCheck ? "true" : "")" hidden />
+</form>
+
+<!-- Modal for record -->
+<div class="modal fade" id="recordModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <form method="post" id="formxxx">
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.onscroll = function () { myScroll() };
+        var header = document.getElementById("datePicker");
+        var sticky = header.offsetTop;
+        function myScroll() {
+            if (window.pageYOffset > sticky) {
+                header.classList.add("sticky");
+            } else {
+                header.classList.remove("sticky");
+            }
+        }
+
+        const cateType = @Html.Raw(Model.IncomeCheck ? "'income'" : "'spending'")
+        const myModal = new bootstrap.Modal('#recordModal', {
+          keyboard: false
+        })
+        function updateModal(Id) {
+            postData("/_component/home/history/Form?", { transactionId: Id, cateType, email: '@Model.Account.Email', delete: 'delete' }).then((data) => {
+                $('#formxxx').html(data)
+            });
+            myModal.show();
+        }
+
+        async function postData(url, data) {
+            // Default options are marked with *
+            console.log(url)
+            console.log(data)
+            const response = await fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    'Content-Type': 'application/json'
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            });
+            return response.text(); // parses JSON response into native JavaScript objects
+        }
+
+        function onChangeDate() {
+            var datefrom = document.getElementById("DateFrom").value;
+            var dateto = document.getElementById("DateTo").value;
+            if (new Date(datefrom).getTime() <= new Date(dateto).getTime()) {
+                toast_success("Change date", "From " + datefrom + " to " + dateto);
+            } else {
+                toast_error("Change date", "Please select From date smaller than To date");
+            }
+        }
+    </script>
+}

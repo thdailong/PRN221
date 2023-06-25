@@ -1,0 +1,375 @@
+﻿@page
+@model Finance.Pages.WalletModel
+@{
+    Layout = "_HomeLayout";
+    ViewData["Title"] = "Wallet";
+}
+
+@section Css {
+    <style>
+        .cate-icon {
+            font-size: 1rem;
+        }
+        .cate-icon > i {
+            width: 1rem;
+            height: 1rem;
+        }
+    </style>
+}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col"style="margin: 20px 20px 10px 20px;">
+            <h2>Wallet</h2>
+            <div class="text-muted">Tracking your money</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="d-flex justify-content-between" style="margin: 20px 20px 10px 20px;">
+
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" @(Model.IncomeCheck ? "" : "checked") />
+                    <label class="btn btn-outline-success" for="btnradio1" onclick="location.href = './wallet'"><i class="fal fa-sack-dollar"></i>
+                        <span>Spending</span></label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @(Model.IncomeCheck ? "checked" : "")>
+                    <label class="btn btn-outline-success" for="btnradio2" onclick="location.href = './wallet?IncomeCheck=true'"><i class="fal fa-hand-holding-usd"></i>
+                        <span>Income</span></label>
+                </div>
+                <div class="d-flex gap-3">
+                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recordModal" onclick="updateModal()">
+                        <i class="fal fa-plus"></i>
+                    </a>
+                    <a class="btn btn-secondary"  data-bs-toggle="modal" data-bs-target="#catesModal">
+                        <i class="fal fa-list"></i>
+                        <span>Manage category</span>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-8">
+            <div class="shadow p-3 border rounded-4" style="background-color: white; margin: 10px 10px 20px 20px; padding-bottom: 1rem;">
+                <div class="d-flex justify-content-between" style="padding: 0 1rem; margin-top: 2rem;">
+                    <h3 style="font-weight: 600;">Category</h3>
+                    <h5>
+                        <span>Total: </span>
+                            <span>@Model.GetStringFormatAmount(Model.SumAmount)</span>
+                    </h5>
+
+                </div>
+
+                @foreach (var C in Model.ListCateAmountByMonth)
+                {
+                    <div class="d-flex justify-content-between" style="padding: 0 1rem; margin-top: 2rem;">
+                        <div class="text-muted">@C.Ym</div>
+                        <div class="text-muted">
+                            <span>In month: </span>
+                            <span>@Model.GetStringFormatAmount(@C.MonthlyAmount)</span>
+                        </div>
+                    </div>
+                    <hr />
+                    @foreach (var c in C.ListAmount)
+                    {
+                        //Log.Debug("ZZZZZZ{@asd}", c);
+                        <div class="d-flex align-items-start" style="padding: 0 1rem;">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-6 d-flex gap-3 align-items-center">
+                                        <span class="btn @c.IconColorClass btn-sm" >
+                                            <i class="@c.ClassName"></i>
+                                        </span>
+                                        <span style="font-weight: 500;">@c.Name</span>
+                                    </div>
+                                    <span class="col-3 text-muted">@c.Cnt transaction</span>
+                                    <h5 class="col-3 d-flex justify-content-end">@Model.GetStringFormatAmount(@c.Amount)</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col" style="margin-left: 3rem;">
+                                        <div class="progress" style="height: 8px;">
+                                          <div class="progress-bar" style="width: @c.MonthlyRatio%; background-color: #034079; border-radius: 4px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr />
+                    }
+                }
+
+
+            </div>
+        </div>
+        <div class="col-4" >
+            <div class=" shadow p-3 border rounded-4" style="margin: 10px 20px 20px 10px; background-color: white">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal for record -->
+<div class="modal fade" id="recordModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+            <div class="d-flex justify-content-between mb-2">
+                <div class="d-flex gap-3 align-items-center">
+                    <span class="btn btn-success btn-sm cate-icon" >
+                        <i class="fal fa-wrench"></i>
+                    </span>
+                    <span style="font-weight: 500;">Eating ou asasfsft</span>
+                </div>
+          </div>
+
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <form method="post" id="formxxx">
+        </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for cate -->
+<div class="modal fade" id="catesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Categories management</h1>
+        <button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <h5 class="text-muted mt-3 mb-3">Create category</h5>
+          <div class="d-flex gap-3 align-items-center mb-2">
+                <span class="btn btn-light btn-sm cate-icon" onclick="insertCate($('#inputCateName').val())">
+                    <i class="fal fa-plus"></i>
+                </span>
+                <input type="text" class="text-muted form-control" id="inputCateName" placeholder="Some category">
+            </div>
+
+          <h5 class="text-muted mt-4 mb-3">List categories</h5>
+          <div id="listCate">
+                @foreach(var c in Model.ListCate)
+                {
+                    <div class="d-flex justify-content-between mb-2">
+                        <div class="d-flex gap-3 align-items-center" data-bs-toggle="modal" data-bs-target="#cateModal" onclick="loadCate(@(c.Id), '@Html.Raw(c.Name)', '@Html.Raw(c.IconColorClass)', '@Html.Raw(c.Icon.ClassName)', @Html.Raw(c.Icon.Id))">
+                            <span class="btn @c.IconColorClass btn-sm cate-icon" >
+                                <i class="@c.Icon.ClassName"></i>
+                            </span>
+                            <span style="font-weight: 500;">@c.Name</span>
+                        </div>
+                        <span class="btn btn-outline-danger btn-sm cate-icon" onclick="deleteCate(@c.Id)">
+                            <i class="fal fa-trash" ></i>
+                        </span>
+                    </div>
+                }
+
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal for 1 cate -->
+<div class="modal fade" id="cateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Edit category</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div class="d-flex justify-content-between mb-2">
+            <div class="d-flex gap-3 align-items-center">
+                <span class="btn btn-success btn-sm cate-icon" id="icon-sample">
+                    <i class="fal fa-wrench"></i>
+                </span>
+                <input type="text" class="form-control" value="Eating" id="icon-name" required>
+                <select class="form-select"  id="color-picker">
+                    <option selected value="btn-primary">Blue</option>
+                    <option value="btn-secondary" >Gray</option>
+                    <option value="btn-success">Green</option>  
+                    <option value="btn-danger" >Red</option>
+                    <option value="btn-warning" >Yellow</option>
+                    <option value="btn-info">Light-blue</option>
+                    <option value="btn-light"  >Light-gray</option>
+                    <option value="btn-dark"  >Dark</option>
+                </select>
+            </div>
+          </div>
+          <div class="text-muted" style="text-align: right">Pick an icon</div>
+          <hr />
+          <div class="p-2 container text-center">
+              <div class="row row-cols-auto gap-2" id="icon-picker">
+                        @foreach(var i in Model.ListIcon)
+                        {
+                        <a class="col btn btn-success btn-sm cate-icon"><i class="@i.ClassName" icon_id="@i.Id" ></i></a>
+                        }
+              </div>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-target="#catesModal" data-bs-toggle="modal">Back</button>
+        <button type="button" class="btn btn-primary" data-bs-target="#catesModal" data-bs-toggle="modal" onclick="updateCate()">Save changes</button>  
+    </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+@section Scripts {
+<script>
+    $('#color-picker').change(function(){
+         console.log(this.value)
+         $("#icon-sample").removeClass()
+         $("#icon-sample").addClass("btn btn-sm cate-icon "+this.value)
+    });
+
+    let currentIcon = {}
+    $('#icon-picker > a').click(function() {
+        $("#icon-sample > i").removeClass().addClass($(this).children().first().attr("class"))
+        currentIcon = {
+            iconId:  $(this).children().first().attr("icon_id"),
+            iconClassName: $(this).children().first().attr("class"),
+        }
+
+        currentCate['iconId'] = Number.parseInt(currentIcon.iconId)
+        currentCate['iconClassName'] = currentIcon.iconClassName
+    })
+
+    // delete 
+    // click trash icon -> confirm -> find id -> delete with id -> reload list
+    // update
+    // click -> find id -> fill data -> call update -> reload list
+
+    const cateType = @Html.Raw(Model.IncomeCheck ? "'income'" : "'spending'")
+    function insertCate(v) {
+        // goi api insert
+
+        postData("/_component/home/wallet/InsertCate?handler=Insert", {
+            cateName: v,
+            cateType: cateType
+        }).then((data) => {
+            $('#listCate').html(data)
+            $('#inputCateName').val("")
+        });
+    }
+
+    function deleteCate(id) {
+        if (confirm("Do you want to delete")) {
+            postData("/_component/home/wallet/InsertCate?handler=Delete", {id, cateType}).then((data) => {
+                $('#listCate').html(data)
+            });
+        }
+    }
+
+    let currentCate = {}
+
+    function loadCate(id, name, color,class_name, iconId) {
+        currentCate = {
+            id, name, color, className: class_name, iconId, cateType
+        }
+        // icon-sample
+        console.log(color)
+        console.log(class_name)
+        $("#icon-sample").removeClass()
+        $("#icon-sample").addClass("btn btn-sm cate-icon "+color)
+        // icon-name
+        $("#icon-name").val(name)
+        // color-picker
+        $("#color-picker").val(color);
+        
+        $("#icon-sample > i").removeClass().addClass(class_name)
+
+    }
+
+    function updateCate() {
+        if (confirm("Do you want to update?")) {
+            currentCate.name = $("#icon-name").val()
+            currentCate.color = $("#color-picker").val()
+            postData("/_component/home/wallet/InsertCate?handler=Update", currentCate).then((data) => {
+                $('#listCate').html(data)
+            });
+        }
+    }
+
+    function updateModal() {
+        postData("/_component/home/wallet/Form?", {cateType, email: '@Model.Account.Email'}).then((data) => {
+            $('#formxxx').html(data)
+        });
+    }
+
+    const CHART_COLORS = {
+      red: 'rgb(255, 99, 132)',
+      orange: 'rgb(255, 159, 64)',
+      yellow: 'rgb(255, 205, 86)',
+      green: 'rgb(75, 192, 192)',
+      blue: 'rgb(54, 162, 235)',
+      purple: 'rgb(153, 102, 255)',
+      grey: 'rgb(201, 203, 207)'
+    };
+
+    async function updateChartFronAPI() {
+        //api/chart/wallet/pie/email/type
+        resp = await fetch("/api/chart/wallet/pie/@(Model.Account.Email)/"+cateType)
+        const txt = await resp.text()
+        const json = JSON.parse(txt)
+        const data = {
+          labels: json.map(e => e.label),
+          datasets: [
+            {
+              label: 'Dataset 1',
+              data: json.map(e => e.value),
+              backgroundColor: [CHART_COLORS.red, CHART_COLORS.orange, CHART_COLORS.yellow, CHART_COLORS.green, CHART_COLORS.blue],
+            }
+          ]
+        };
+        const config = {
+          type: 'doughnut',
+          data: data,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+            }
+          },
+        };
+        new Chart(document.getElementById('pieChart'),  config);
+    }
+    updateChartFronAPI()
+
+    async function postData(url, data) {
+      // Default options are marked with *
+      console.log(url)
+      console.log(data)
+      const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
+      return response.text(); // parses JSON response into native JavaScript objects
+    }
+</script>
+}
+
+
