@@ -18,7 +18,7 @@ namespace Finance.Utils
         public static async Task Init(IConfiguration cfg)
         {
             Log.Debug("Sqlite: Initializing... ");
-            var connStr = localDev ? "Data Source=db/_database.db" : cfg["Sql"];
+            var connStr = localDev ? "Data Source=db/_database.local.db" : cfg["Sql"];
             Sql = new SqliteConnection(connStr);
             Sql.Open();
             Log.Debug("Sqlite: Testing connection...");
