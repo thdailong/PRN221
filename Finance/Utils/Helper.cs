@@ -17,7 +17,6 @@ namespace Finance.Utils
 
             private static QuoteSource[] sources =
             {
-                new() { Url="https://api.goprogram.ai/inspiration", AuthorPath="author", MessagePath="quote" },
                 new() { Url="https://api.quotable.io/random", AuthorPath="author", MessagePath="content" },
             };
 
@@ -25,7 +24,7 @@ namespace Finance.Utils
 
             public static async Task<QuoteData> Get()
             {
-                var source = sources[rng.Next(2)];
+                var source = sources[rng.Next(1)];
                 var json = JsonDocument.Parse(await Clients.Http.GetStringAsync(source.Url)).RootElement;
                 return new QuoteData
                 {

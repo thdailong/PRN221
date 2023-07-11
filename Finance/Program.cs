@@ -12,14 +12,25 @@ builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 
+// Configure authentication services
 builder.Services.AddAuthentication(Identity.Schema).AddCookie(options =>
 {
+    // Set the cookie to be accessible only through HTTP
     options.Cookie.HttpOnly = true;
+
+    // Set the expiration time for the cookie to 30 days
     options.ExpireTimeSpan = TimeSpan.FromDays(30);
+
+    // Set the path for the login page
     options.LoginPath = "/login";
+
+    // Set the path for the access denied page
     options.AccessDeniedPath = "/error/accessDenied";
+
+    // Set the path for the logout page
     options.LogoutPath = "/logout";
 });
+
 
 builder.Services.AddAuthorization(cfg =>
 {
