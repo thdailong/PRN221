@@ -41,7 +41,7 @@ namespace Finance.Pages
             }
 
             await Identity.Login(HttpContext, Email, RememberMe);
-            return Redirect(Request.Query["ReturnUrl"].FirstOrDefault("/"));
+            return Redirect(Request.Query["ReturnUrl"].FirstOrDefault("/account"));
         }
     }
 }

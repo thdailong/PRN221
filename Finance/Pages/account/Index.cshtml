@@ -1,0 +1,272 @@
+﻿@page
+@using System.Globalization
+@model IndexModel
+@{
+	Layout = "_HomeLayout";
+	ViewData["Title"] = "Home";
+}
+
+@section Css {
+		<style>
+			.income-number {
+				color: #45A18D;
+			}
+			.spending-number {
+				color: #E47072;
+			}
+		</style>
+}
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-6">
+				<div class=" shadow p-3  rounded-4" style="margin: 20px 10px 20px 20px; background-color: white">
+					  <div class="d-flex justify-content-between">
+						<h4 style="font-weight: bold">Income</h4>
+						<div class="btn-group">
+										<button type="button" class="btn btn-outline-secondary btn-sm">@(DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd"))</button>
+							<button type="button" class="btn btn-outline-secondary btn-sm">@DateTime.Now.ToString("yyyy-MM-dd")</button>
+					</div>
+				</div>
+						<h5 class="income-number"><i class="fal fa-coins"></i> @Model.GetVNDCurrency(Model.IncomeAmount) VND</h5>
+
+				<canvas id="myChart1"></canvas>
+			</div>
+
+		</div>
+		<div class="col-6" >
+			<div class=" shadow p-3 rounded-4" style="margin: 20px 20px 20px 10px; background-color: white">
+
+				<div class="d-flex justify-content-between">
+					<h4 style="font-weight: bold">Spending</h4>
+					<div class="btn-group">
+								 <button type="button" class="btn btn-outline-secondary btn-sm">@(DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd"))</button>
+							<button type="button" class="btn btn-outline-secondary btn-sm">@(DateTime.Now.ToString("yyyy-MM-dd"))</button>
+					</div>
+				</div>
+					<h5 class="spending-number"><i class="fal fa-money-bill-wave-alt"></i> @Model.GetVNDCurrency(Model.SpendingAmount) VND</h5>
+				<canvas id="myChart2"></canvas>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<div class=" shadow p-4  rounded-4 text-center" style="margin: 10px 10px 10px 20px; background-color: white">
+				<h4 style="font-weight: 600"><i class="fal fa-balance-scale"></i> @Model.GetVNDCurrency(Model.TotalBalance) VND</h4>
+				<span class="text-muted">Total balance</span>
+			</div>
+		</div>
+		<div class="col">
+			<div class=" shadow p-4  rounded-4 text-center" style="margin: 10px 10px 10px 10px; background-color: white">
+				<h4 style="font-weight: 600"><i class="fal fa-coins" ></i> @Model.GetVNDCurrency(Model.TodayIncome) VND</h4>
+				<span class="text-muted">Today income</span>
+			</div>
+		</div>
+		<div class="col">
+			<div class=" shadow p-4  rounded-4 text-center" style="margin: 10px 20px 10px 10px; background-color: white">
+				<h4 style="font-weight: 600"><i class="fal fa-money-bill-wave-alt"></i> @Model.GetVNDCurrency(Model.TodaySpending) VND</h4>
+				<span class="text-muted">Today spending</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-6">
+			<div class=" shadow p-4 rounded-4" style="margin: 10px 10px 20px 20px; background-color: white">
+				<h4 class="mb-4" style="font-weight: 600">Top 5 categories</h4>
+				<div class="btn-group mb-4" role="group" aria-label="Basic radio toggle button group">
+					<input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" @(Model.IncomeCheck ? "" : "checked") />
+					<label class="btn btn-outline-success" for="btnradio1" onclick="location.href = '/Index'"><i class="fal fa-sack-dollar"></i>
+					<span>Spending</span></label>
+
+					<input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @(Model.IncomeCheck ? "checked" : "")>
+					<label class="btn btn-outline-success" for="btnradio2" onclick="location.href = '/Index?IncomeCheck=true'"><i class="fal fa-hand-holding-usd"></i>
+					<span>Income</span></label>
+				</div>
+				@for(int i = 0 ; i<Model.lstCatCount.Count; i += 1) {
+				<div class="d-flex align-items-start">
+					<div class="col">
+						<div class="row">
+							<div class="col-6 d-flex gap-3 align-items-center">
+								<span class="btn btn-success btn-sm" >
+									<i class="@Model.lstIconClassName[i]"></i>
+								</span>
+								<span style="font-weight: 500;"> @Model.lstCatName[i] </span>
+							</div>
+							<span class="col-3 text-muted">@Model.lstCatCount[i] transactions</span>
+							<h5 class="col-3 d-flex justify-content-end">@Model.GetVNDCurrency(Model.lstCatAmount[i]) </h5>
+						</div>
+						<div class="row">
+							<div class="col offset-1">
+								<div class="progress" style="height: 8px;">
+								  <div class="progress-bar" style="width: @Model.ProgressPercent[i]%; background-color: #034079; border-radius: 4px;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr />
+				}
+			</div>
+		</div>
+		<div class="col-6">
+			<div class="position-relative shadow rounded-4" style="margin: 10px 20px 20px 10px; background-color: white; height: 462px; overflow-y: scroll;">
+				<h4 class="mb-4 sticky-top p-4" style="font-weight: 600; background-color:white;">History</h4>
+				<div style="padding: 0 1.5rem 1.5rem 1.5rem ">
+
+				@for(int i = 0 ; i<Model.LstTransactions.Count; i += 1) {
+
+				<div class="row mb-3">
+					<div class="col-5 d-flex gap-3 align-items-center">
+						<span class="btn btn-success btn-sm" >
+							<i class="@Model.LstTransactions[i].Category.Icon.ClassName"></i>
+						</span>
+						<span style="font-weight: 500;">@Model.LstTransactions[i].Category.Name</span>
+					</div>
+					<span class="col-4 text-muted">@Model.LstTransactions[i].Date</span>
+						@if (Model.LstTransactions[i].Category.Type == "income")
+						{
+								<h5 class="col-3  d-flex gap-1 justify-content-end align-items-center income-number">+@Model.GetVNDCurrency(Model.LstTransactions[i].Amount)  <i class="fal fa-money-bill"></i></h5>
+						}
+						else
+						{
+									<h5 class="col-3  d-flex gap-1 justify-content-end align-items-center spending-number">-@Model.GetVNDCurrency(Model.LstTransactions[i].Amount)  <i class="fal fa-money-bill"></i></h5>
+						}
+				</div>
+				<hr />
+				}
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		
+		const Bar = @Html.Raw(Model.Stats.Bar)
+		const labels = Bar.map(x=>x.label)
+		const data = {
+			labels: labels,
+			datasets: [{
+				label: 'Income',
+				backgroundColor: 'rgba(69,161,141,0.1)',
+				borderColor: '#45A18D',
+				data: Bar.map(x=>x.income),
+				tension: 0.4,
+				fill: true,
+			}]
+		};
+
+		const data2 = {
+			labels: labels,
+			datasets: [{
+				label: 'Spending',
+				backgroundColor: 'rgba(228,112,114,0.1)',
+				borderColor: '#E47072',
+				data: Bar.map(x=>x.spend),
+				tension: 0.4,
+				fill: true,
+			}]
+		};
+
+		const config = {
+			type: 'line',
+			data: data,
+			options: {
+				plugins: {
+					legend: {
+						labels: false,
+					}
+				},
+
+				scales: {
+					x: {
+						display: true,
+						title: {
+							display: false,
+						},
+						grid: {
+							display: false
+						},
+						ticks: {
+							font: {
+								size: "16px",
+							}
+						}
+					},
+					y: {
+						display: true,
+						title: {
+							display: false
+						},
+						suggestedMin: 0,
+						suggestedMax: 1,
+						ticks: {
+							font: {
+								size: "16px",
+							}
+						}
+					}
+				}
+
+			}
+		};
+
+		const config2 = {
+			type: 'line',
+			data: data2,
+			options: {
+				plugins: {
+					legend: {
+						labels: false,
+					}
+				},
+				scales: {
+					x: {
+						display: true,
+						title: {
+							display: false
+						},
+						grid: {
+							display: false
+						},
+						ticks: {
+							font: {
+								size: "16px",
+							}
+						}
+					},
+					y: {
+						display: true,
+						title: {
+							display: false,
+						},
+						suggestedMin: 0,
+						suggestedMax: 1,
+						ticks: {
+							font: {
+								size: "16px",
+							}
+						}
+
+					},
+
+				}
+
+			}
+		};
+
+		new Chart(
+			document.getElementById('myChart1'),
+			config
+		);
+		new Chart(
+			document.getElementById('myChart2'),
+			config2
+		);
+	</script>
+}
