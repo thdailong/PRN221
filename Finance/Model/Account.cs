@@ -12,6 +12,8 @@ namespace Finance.Model
 
         public string AvatarUrl { get; set; } = "";
 
+        public int active { get; set; } = 0;
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime LastActive { get; set; }
