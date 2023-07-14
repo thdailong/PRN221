@@ -148,6 +148,7 @@
 	<script>
 		
 		const Bar = @Html.Raw(Model.Stats.Bar)
+		console.log(Bar);
 		const labels = Bar.map(x=>x.label)
 		const data = {
 			labels: labels,

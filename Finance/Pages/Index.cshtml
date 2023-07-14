@@ -4,8 +4,257 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>@ViewData["Title"]</h1>
+<style>
+    .background-gradient {
+        background-image: url('asset/img/gradient-background.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        padding-left: 120px;
+        padding-right: 120px;
+    }
 
-<div>
-    
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 0px;
+        font-family: "Plus Jakarta Sans", sans-serif;
+    }
+
+    .content-container {
+        padding-top: 10px;
+    }
+
+    .btn-getstart {
+        color: #fff;
+        border-radius: 12px;
+        background-color: rgb(99, 102, 241);
+    }
+
+    .text-container {
+        max-width: 500px;
+        margin-bottom: 50px;
+    }
+
+    h1 span {
+        color: rgb(99, 102, 241);
+    }
+
+    .title-chart {
+        font-size: 24px;
+        font-weight: 600;
+        color: #000;
+        text-align: center;
+        padding-bottom: 20px;
+    }
+
+
+</style>
+
+<div class="background-gradient">
+    <div class="header-container">
+        <div><img src="/asset/img/logo.png" style="width: 32px; height: 32px"/> 
+        <span style="padding-top: 10px;">
+        FINANCE
+
+        </span>
+        </div>
+        <div><a class="btn btn-primary btn-getstart" href="./account">Get Started!</a> </div>
+    </div>
+    <div>
+        <div class="text-container">
+            <h1 style="font-weight: 700;">Learn how to manage your <span>Income and Expense</span> every moments easily with our website</h1>
+            <h4 style="    color: #7a707061;">A professional website that comes with ready-to-use UI with one common goal in mind, help you manage your money better and faster</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div  class=" shadow p-3  rounded-4" style="background-color: white">
+                <div class="title-chart">Tracking your Income every month</div>
+                <canvas id="myChart1"></canvas>
+            </div>
+        </div>
+        <div class="col-6">
+            <div  class=" shadow p-3  rounded-4" style="background-color: white">
+                <div class="title-chart">Tracking your Expense every month</div>
+                <canvas id="myChart2"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+   
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/asset/js/signalr.min.js"></script>
+    <script src="~/asset/js/iziToast.min.js"></script>
+
 </div>
+
+@section Scripts {
+                <script>
+
+                    const Bar = [
+                        {
+                            income: 100000,
+                            label: '2023-06-23',
+                            spend: 0
+                        },
+                        {
+                            income: 30000,
+                            label: '2023-06-24',
+                            spend: 5000000
+                        },
+                        {
+                            income: 30000,
+                            label: '2023-06-25',
+                            spend: 5000000
+                        },
+                        {
+                            income: 300000,
+                            label: '2023-06-26',
+                            spend: 0
+                        },
+                        {
+                            income: 200000,
+                            label: '2023-06-27',
+                            spend: 50000
+                        }
+                        ,
+                        {
+                            income: 200000,
+                            label: '2023-06-28',
+                            spend: 50000
+                        }
+                        ,
+                        {
+                            income: 200000,
+                            label: '2023-06-30',
+                            spend: 50000
+                        }
+                    ]
+
+                    const labels = Bar.map(x=>x.label)
+                    const data = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Income',
+                            backgroundColor: 'rgba(69,161,141,0.1)',
+                            borderColor: '#45A18D',
+                            data: Bar.map(x=>x.income),
+                            tension: 0.4,
+                            fill: true,
+                        }]
+                    };
+
+                    const data2 = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Spending',
+                            backgroundColor: 'rgba(228,112,114,0.1)',
+                            borderColor: '#E47072',
+                            data: Bar.map(x=>x.spend),
+                            tension: 0.4,
+                            fill: true,
+                        }]
+                    };
+
+                    const config = {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            plugins: {
+                                legend: {
+                                    labels: false,
+                                }
+                            },
+
+                            scales: {
+                                x: {
+                                    display: true,
+                                    title: {
+                                        display: false,
+                                    },
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        font: {
+                                            size: "16px",
+                                        }
+                                    }
+                                },
+                                y: {
+                                    display: true,
+                                    title: {
+                                        display: false
+                                    },
+                                    suggestedMin: 0,
+                                    suggestedMax: 1,
+                                    ticks: {
+                                        font: {
+                                            size: "16px",
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    };
+
+                    const config2 = {
+                        type: 'line',
+                        data: data2,
+                        options: {
+                            plugins: {
+                                legend: {
+                                    labels: false,
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    display: true,
+                                    title: {
+                                        display: false
+                                    },
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        font: {
+                                            size: "16px",
+                                        }
+                                    }
+                                },
+                                y: {
+                                    display: true,
+                                    title: {
+                                        display: false,
+                                    },
+                                    suggestedMin: 0,
+                                    suggestedMax: 1,
+                                    ticks: {
+                                        font: {
+                                            size: "16px",
+                                        }
+                                    }
+
+                                },
+
+                            }
+
+                        }
+                    };
+
+                    new Chart(
+                        document.getElementById('myChart1'),
+                        config
+                    );
+                    new Chart(
+                        document.getElementById('myChart2'),
+                        config2
+                    );
+                </script>
+}
