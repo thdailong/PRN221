@@ -67,14 +67,14 @@ namespace Finance.Pages._Component.Home.History
         public async Task<IActionResult> OnPostDelete([FromQuery] int id, [FromQuery] string type)
         {
             await TransactionDAM.DeleteTransaction(id);
-            string url = type == "income" ? "~/history?IncomeCheck=true" : "~/history";
+            string url = type == "income" ? "~/account/history?IncomeCheck=true" : "~/account/history";
             return Redirect(url);
         }
 
         public async Task<IActionResult> OnPostUpdate([FromQuery] int id, [FromQuery] string type)
         {
             await TransactionDAM.UpdateTransaction(id, f.Date, f.CateId, f.Desc, f.Amount);
-            string url = type == "income" ? "~/history?IncomeCheck=true" : "~/history";
+            string url = type == "income" ? "~/account/history?IncomeCheck=true" : "~/account/history";
             return Redirect(url);
         }
     }
