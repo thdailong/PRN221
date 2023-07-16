@@ -32,6 +32,8 @@ namespace Finance.Pages
         public async Task<IActionResult> OnPostAsync()
         {
             Quote = await Helper.Quote.Get();
+            Log.Debug("{@email}", Email);
+            Log.Debug("{@pass}", Password);
             var res = await DAM.AccountDAM.SignIn(Email, Password);
             if (!res) ModelState.AddModelError("InputWrong", "Email or Password incorrect");
 

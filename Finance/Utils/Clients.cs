@@ -21,10 +21,6 @@ namespace Finance.Utils
             var connStr = localDev ? "Data Source=db/_database.local.db" : cfg["Sql"];
             Sql = new SqliteConnection(connStr);
             Sql.Open();
-            Log.Debug("Sqlite: Testing connection...");
-            Log.Debug("Sqlite: Group={GroupId} Member={Member}", 2, Sql.Query<string>("select Name from TeamMember"));
-            Log.Debug("Sqlite: Initialized\n");
-
             Log.Debug("HttpClient: Initializing... ");
             Http = new HttpClient();
             Log.Debug("HttpClient: Testing with simple query...");
