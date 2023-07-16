@@ -1,31 +1,32 @@
 ﻿@using Finance.Utils
 @{
-    Layout = "_Layout";
+  Layout = "_Layout";
 }
 
 @section Css {
-    <style>
-        body {
-            min-height: 100vh;
-            background-color: #F4F7FD;
-        }
+      <style>
+          body {
+              min-height: 100vh;
+              background-color: #F4F7FD;  
+              font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+          }
 
-        .sidebar-item.active {
-            background-color: #E6EEF2;
-            border-radius: 10px;
-        }
-        .sidebar-item.active > a {
-            color: #034079 !important;
-            font-weight:bold;
-        }
-    </style>
+          .sidebar-item.active {
+              background-color: #E6EEF2;
+              border-radius: 10px;
+          }
+          .sidebar-item.active > a {
+              color: #034079 !important;
+              font-weight:bold;
+          }
+      </style>
 
-    @await RenderSectionAsync("Css", false)
+  @await RenderSectionAsync("Css", false)
 }
 
 @section Scripts {
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    @await RenderSectionAsync("Scripts", false)
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  @await RenderSectionAsync("Scripts", false)
 }
 
 <div>
@@ -62,10 +63,23 @@
                       <span>Profile</span>
                     </a>
                   </li>
+                   </li>
+                    <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "reminder")">
+                     <a href="/account/reminder" class="nav-link text-white">
+                      <i class="fal fa-user-circle" style="width: 40px; height: 16px;"></i>
+                      <span>Reminder</span>
+                    </a>
+                  </li>
                   <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "feedback")">
                     <a href="/account/feedback" class="nav-link text-white">
                       <i class="fal fa-comments-alt" style="width: 40px; height: 16px;"></i>
                       <span>Feedback</span>
+                    </a>
+                  </li>
+                  <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "support")">
+                    <a href="/account/support" class="nav-link text-white">
+                      <i class="fal fa-comments-alt" style="width: 40px; height: 16px;"></i>
+                      <span>Support</span>
                     </a>
                   </li>
                   <li class="nav-item sidebar-item @Helper.ActiveClass(Context, "logout")">
