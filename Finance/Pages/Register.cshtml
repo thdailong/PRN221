@@ -8,11 +8,8 @@
 @section Css {
     <style>
         body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #D3E3F2;
+            height: 100vh;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
         }
         a {
             text-decoration: none;
@@ -21,34 +18,35 @@
         a:hover {
             color: #00A8FF;
         }
+
+        .register-link {
+            color: rgb(99, 102, 241)
+        }
+
+        form {
+            max-width: 400px;
+        }
+
+        .login-container {
+            align-self: center;
+            text-align: -webkit-center;
+        }
+
+        .alert {
+            text-align: left;
+        }
     </style>
 }
 
-<div class="container">
-    <div class="row rounded overflow-hidden" style="background-color: #F3F6FD;">
-        <div class="col-6 p-0 position-relative">
-            <img src="~/asset/img/login-bg5.jpg" class="img-fluid h-100"  style="object-fit: cover;filter: blur(1px);">
-            <div class="position-absolute d-flex justify-content-center align-items-center" style="inset: 0; padding: 20px">
-                <div class="text-center" style="color: white">
-                    <h1 style="font-weight: bold;">Finance</h1>
-                    <h5>The world-class app for expense tracking. Register now and start your journey</h5>
-                </div>
+<div style="height: 100%;">
+    <div class="row rounded overflow-hidden" style="background-color: #F3F6FD; height: 100%;">
+        <div class="col-6 login-container" >
+            <div class="row mb-1">
+                <h2 style="font-weight: 600;">Register</h2>
             </div>
-        </div>
-        <div class="col-6" style="padding: 40px 100px">
-            <div class="row mb-5  text-center">
-                <h2>Create account</h2>
+            <div class="row mb-2">
+                <p>Already have an account?  <a href="login" class="register-link">Log in</a> </p>
             </div>
-                <div class="text-muted mb-5 text-center">
-                    <figure>
-                        <blockquote class="blockquote">
-                            <p>@Model.Quote.Message</p>
-                        </blockquote>
-                        <figcaption class="blockquote-footer text-end">
-                            <cite title="Source Title">@Model.Quote.Author</cite>
-                        </figcaption>
-                    </figure>
-                </div>
             <form class="row" method="post">
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fal fa-user" style="width: 20px;"></i></span>
@@ -78,6 +76,14 @@
                   <button class="flex-grow-1 btn btn-primary" type="submit">Submit</button>
                 </div>
             </form>
+        </div>
+        <div class="col-6 p-0 position-relative" style="background: radial-gradient(50% 50% at 50% 50%, rgb(18, 38, 71) 0%, rgb(9, 14, 35) 100%);">
+            <div class="position-absolute d-flex justify-content-center align-items-center" style="inset: 0; padding: 20px">
+                <div class="text-center" style="color: white">
+                    <h1 style="font-weight: bold;">Finance</h1>
+                    <h5>One of the world best app for tracking income and outcome changes! </h5>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -14,6 +14,9 @@
 			.spending-number {
 				color: #E47072;
 			}
+			body {
+				font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+			}
 		</style>
 }
 
@@ -77,11 +80,11 @@
 				<h4 class="mb-4" style="font-weight: 600">Top 5 categories</h4>
 				<div class="btn-group mb-4" role="group" aria-label="Basic radio toggle button group">
 					<input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" @(Model.IncomeCheck ? "" : "checked") />
-					<label class="btn btn-outline-success" for="btnradio1" onclick="location.href = '/Index'"><i class="fal fa-sack-dollar"></i>
+					<label class="btn btn-outline-success" for="btnradio1" onclick="location.href = '/account'"><i class="fal fa-sack-dollar"></i>
 					<span>Spending</span></label>
 
 					<input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @(Model.IncomeCheck ? "checked" : "")>
-					<label class="btn btn-outline-success" for="btnradio2" onclick="location.href = '/Index?IncomeCheck=true'"><i class="fal fa-hand-holding-usd"></i>
+					<label class="btn btn-outline-success" for="btnradio2" onclick="location.href = '/account/Index?IncomeCheck=true'"><i class="fal fa-hand-holding-usd"></i>
 					<span>Income</span></label>
 				</div>
 				@for(int i = 0 ; i<Model.lstCatCount.Count; i += 1) {
@@ -148,6 +151,7 @@
 	<script>
 		
 		const Bar = @Html.Raw(Model.Stats.Bar)
+		console.log(Bar);
 		const labels = Bar.map(x=>x.label)
 		const data = {
 			labels: labels,

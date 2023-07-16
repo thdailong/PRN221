@@ -13,6 +13,6 @@
 ## Resources
 
 - [Sqlite UI](https://sqlitebrowser.org/dl/)
-- [Database Design](https://dbdiagram.io/d/64782465722eb7749430382f)
+- [Database Design](https://dbdiagram.io/d/64b3c9d202bd1c4a5e25c0ca)
 - [Learn how to use QueryAsync](https://chat.openai.com/share/0fb27d48-9fc9-4aa4-a9eb-b10f5a7e33c0)
 - [Sample page to follow](https://material-kit-react.devias.io/)
