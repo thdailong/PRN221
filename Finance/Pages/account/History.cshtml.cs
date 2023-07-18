@@ -119,6 +119,7 @@ namespace Finance.Pages
         public async Task GetListCateByType()
         {
             Categories = await CategoryDAM.ListCategoryByType(Account.Email, IncomeCheck ? "income" : "spending");
+            Log.Debug("Categories: {@Categories}", Categories);
         }
 
         public string GetStringFormatAmount(double num)

@@ -1,0 +1,83 @@
+@page
+@model Finance.Pages.account.SupportUser
+
+@{
+    Layout = "_HomeLayout";
+    ViewData["Title"] = "Support user";
+}
+
+
+<div>
+    <div id='chat-box'></div>
+</div>
+
+
+@section Scripts {
+        <script src="~/asset/js/signalr.min.js"></script>
+        <script src="~/asset/js/iziToast.min.js"></script>
+    <script>
+
+        function connectWS(startCb = () => { }) {
+            var conn = new signalR.HubConnectionBuilder().withUrl("/_ws").build();
+            conn.start().then(() => startCb(conn));
+            return conn;
+        }
+
+
+        const accountEmail = @Html.Raw(Json.Serialize(@Model.Account));
+        console.log(accountEmail);
+        async function loadBoxChat() {
+            const resp = await fetch("/_component/home/boxchat/boxchat?user=" + accountEmail.email, {
+                method: "get"
+            });
+            $("#chat-box").html(await resp.text());
+        }
+        loadBoxChat();
+        async function onSendMessagae() {
+            const message = $("#input-message");
+
+            const value = message.val();
+            if (value.length != 0) {
+                console.log(accountEmail);
+                const objectPost = {
+                    Content: value,
+                    FromUser: true,
+                    Email: accountEmail.email
+                }
+                postData("/_component/home/boxchat/boxchat?handler=Insert", objectPost).then((data) => {
+                    $('#chat-box').html(data)
+                });
+                connectWS(conn => {
+					conn.invoke("SendMessage");
+				});
+            }
+        }
+
+        const conn = connectWS(conn => {
+            conn.invoke("Join", "listenChat");
+        });
+
+        conn.on("NewMessage", email => {
+            loadBoxChat();
+        });
+
+        
+
+        async function postData(url, data) {
+          // Default options are marked with *
+          console.log(url)
+          console.log(data)
+          const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+              'Content-Type': 'application/json'
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+          });
+          return response.text(); // parses JSON response into native JavaScript objects
+        }
+    </script>
+}
+
+

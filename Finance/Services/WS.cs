@@ -29,5 +29,10 @@ namespace Finance.Services
         {
             await Clients.Group("listenNewFb").SendAsync("NewFeedback", userEmail);
         }
+
+        public async Task SendMessage()
+        {
+            await Clients.Group("listenChat").SendAsync("NewMessage");
+        }
     }
 }

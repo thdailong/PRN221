@@ -1,0 +1,128 @@
+@page
+@model Finance.Pages._Component.Home.BoxChat.BoxChat
+@using Finance.Utils
+@{
+    ViewData["Title"] = "BoxChat";
+}
+
+<style>
+    .container-component {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .boxchat-container {
+        height: 500px;
+        overflow: auto;
+        padding: 10px
+    }
+
+    .boxchat-header {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #928787;
+        font-size: 30px;
+        font-weight: 500;
+        padding-left: 20px;
+    }
+
+    .boxchat-user {
+        display: flex;
+    }
+
+    .from-own {
+        justify-content: flex-end;
+    }
+
+    .from-user {
+        justify-content: flex-start;
+    }
+
+    .card-common {
+        padding: 8px 16px;
+        border-radius: 20px;
+        max-width: 70%;
+        word-wrap: break-word;
+        margin-bottom: 10px;
+    }
+
+    .card-own {
+        background-color: rgb(99, 102, 241);
+        color: #fff;
+    }
+
+    .card-user {
+        background-color: #fff;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        background-color: #beb4b4;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .icon {
+        font-size: 30px;
+    }
+
+    .input-chat {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .input-chat input {
+        max-width: 100%;
+        width: 100%;
+        padding: 5px;
+        border-radius: 12px;
+        margin-right: 5px;
+    }
+
+
+</style>
+
+
+<div class="container-component">
+    <div class="boxchat-header">
+        Admin
+    </div>
+
+    <div class="boxchat-container">
+        @foreach (var item in Model.Supports)
+        @if (item.FromUser) {
+            <div class="boxchat-user from-own">
+                
+                <div class="shadow p3 card-common card-own">
+                    <div>Me</div>
+                    <div>@item.Content</div>
+                </div>
+                <div class="avatar">
+                    <i class="fal fa-user icon"></i>
+                </div>
+            </div>
+        }
+        else 
+        {
+            <div class="boxchat-user from-user ">
+                <div  class="avatar">
+                    <i class="fal fa-user icon"></i>
+                </div>
+                <div class="shadow p3 card-common card-user">
+                    <div>@item.Account.DisplayName</div>
+                    <div>@item.Content</div>
+                </div>
+            </div>    
+        }
+    </div>
+    <div class="input-chat">
+        <input id="input-message"/>
+        <button class="btn btn-primary" onclick="onSendMessagae()" type="submit">Send</button>
+    </div>
+</div>
