@@ -9,9 +9,8 @@ using Finance.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
-namespace Finance.Pages._Component.Home.BoxChat
+namespace Finance.Pages._Component.Admin.BoxChat
 {
     public class BoxChat : _CompModel
     {
@@ -32,7 +31,6 @@ namespace Finance.Pages._Component.Home.BoxChat
             Supports = await SupportDAM.GetMessageFromUser(Email);
             return Page();
         }
-
 
     }
 }

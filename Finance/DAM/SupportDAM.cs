@@ -66,7 +66,28 @@ namespace Finance.DAM
             return (await Clients.Sql.QueryAsync<String>(query)).AsList();
         }
 
-
+        public static async Task<List<Support>> LastMessageFromUser(string email)
+        {
+            var query = @"
+                select * from Support s
+                left join Account a on s.Email=a.Email
+                where s.Email=@email
+                order by s.CreatedAt desc
+                LIMIT 1";
+            return (await Clients.Sql.QueryAsync<Support, Account, Support>(
+                query,
+                (support, account) =>
+                {
+                    support.Account = account;
+                    return support;
+                },
+                new
+                {
+                    email
+                },
+                splitOn: "Email"
+                )).AsList();
+        }
 
     }
 }

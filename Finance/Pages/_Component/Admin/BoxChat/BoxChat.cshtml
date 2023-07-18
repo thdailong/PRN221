@@ -1,6 +1,8 @@
 @page
-@model Finance.Pages._Component.Home.BoxChat.BoxChat
-@using Finance.Utils
+@model Finance.Pages._Component.Admin.BoxChat.BoxChat
+@{
+    ViewData["Title"] = "BoxChat";
+}
 @{
     ViewData["Title"] = "BoxChat";
 }
@@ -88,15 +90,14 @@
 
 </style>
 
-
 <div class="container-component">
     <div class="boxchat-header">
-        Admin
+        @Model.Supports[0].Account.Email
     </div>
 
     <div class="boxchat-container">
         @foreach (var item in Model.Supports)
-        @if (item.FromUser) {
+        @if (!item.FromUser) {
             <div class="boxchat-user from-own">
                 
                 <div class="shadow p3 card-common card-own">

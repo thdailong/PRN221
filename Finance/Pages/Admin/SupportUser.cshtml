@@ -1,0 +1,126 @@
+@page
+@model Finance.Pages.Admin.SupportUser
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Support User";
+}
+
+<style>
+    table {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<div>
+    @if (Model.queryEmail)
+    {
+        <table class="card shadow p3">
+            <th>
+                User
+            </th>
+            <th>
+                Last message
+            </th>
+            <th>
+                Date time
+            </th>
+            <th>
+                Enter chat
+            </th>
+        @foreach (var item in Model.ActiveSupport)
+        {
+            <tr>
+                <td>@item.Account.DisplayName</td>
+                <td>@item.Content</td>
+                <td>@item.CreatedAt</td>
+                <td>
+                    <a href="/admin/supportuser?userEmail=@item.Account.Email" class="btn btn-info">
+                        @item.Account.Email
+                    </a>
+                </td>
+            </tr>
+        }
+        </table>
+    }
+    else {
+
+    <div>
+        <div id='chat-box'></div>
+    </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/asset/js/signalr.min.js"></script>
+    <script src="~/asset/js/iziToast.min.js"></script>
+<script>
+    function connectWS(startCb = () => { }) {
+            var conn = new signalR.HubConnectionBuilder().withUrl("/_ws").build();
+            conn.start().then(() => startCb(conn));
+            return conn;
+        }
+
+    const accountEmail = @Html.Raw(Json.Serialize(@Model.chattingEmail));
+    async function loadBoxChat() {
+        const resp = await fetch("/_component/admin/boxchat/boxchat?user=" + accountEmail, {
+            method: "get"
+        });
+        $("#chat-box").html(await resp.text());
+    }
+    loadBoxChat();
+    async function onSendMessagae() {
+        const message = $("#input-message");
+        
+        const value = message.val();
+        if (value.length != 0) {
+            const objectPost = {
+                Content: value,
+                FromUser: false,
+                Email: accountEmail
+            }
+            postData("/_component/admin/boxchat/boxchat?handler=Insert", objectPost).then((data) => {
+                $('#chat-box').html(data)
+            });
+            connectWS(conn => {
+					conn.invoke("SendMessage");
+				});
+        }
+    }
+
+     const conn = connectWS(conn => {
+            conn.invoke("Join", "listenChat");
+        });
+
+        console.log(conn);
+
+        conn.on("NewMessage", email => {
+            
+            loadBoxChat();
+        });
+
+    async function postData(url, data) {
+      // Default options are marked with *
+      console.log(url)
+      console.log(data)
+      const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
+      return response.text(); // parses JSON response into native JavaScript objects
+    }
+</script>
+}
+
+

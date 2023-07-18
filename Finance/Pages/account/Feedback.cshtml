@@ -204,7 +204,7 @@
 				toast_success("Feedback was sent", "Thank you for your help");
 
 				connectWS(conn => {
-					conn.invoke("SentFeedback", "@Model.Account.Email");
+					conn.invoke("SendMessage");
 				});
 			</text>
 		}
