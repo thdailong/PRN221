@@ -43,6 +43,7 @@ namespace Finance.Pages
             }
 
             await Identity.Login(HttpContext, Email, RememberMe);
+            if (Email == "admin@Finance.com") return Redirect("/admin");
             return Redirect(Request.Query["ReturnUrl"].FirstOrDefault("/account"));
         }
     }
